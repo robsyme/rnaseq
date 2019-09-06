@@ -54,6 +54,7 @@ def helpMessage() {
       --trim_nextseq [int]          Instructs Trim Galore to apply the --nextseq=X option, to trim based on quality after removing poly-G tails
       --pico                        Sets trimming and standedness settings for the SMARTer Stranded Total RNA-Seq Kit - Pico Input kit. Equivalent to: --forwardStranded --clip_r1 3 --three_prime_clip_r2 3
       --saveTrimmed                 Save trimmed FastQ file intermediates
+      --genomeSAindexNbases [int]   Length (in bases) of the SA pre-indexing string passed to STAR indexer
 
     Alignment:
       --aligner                     Specifies the aligner to use (available are: 'hisat2', 'star')
@@ -162,6 +163,7 @@ else if ( params.hisat2_index && params.aligner == 'hisat2' && !params.skipAlign
         .ifEmpty { exit 1, "HISAT2 index not found: ${params.hisat2_index}" }
 }
 else if ( params.fasta && !params.skipAlignment ){
+    params.genomeSAindexNbases = 14
     Channel.fromPath(params.fasta, checkIfExists: true)
         .ifEmpty { exit 1, "Genome fasta file not found: ${params.fasta}" }
         .into { ch_fasta_for_star_index; ch_fasta_for_hisat_index }
@@ -460,6 +462,7 @@ if (!params.skipAlignment){
           STAR \\
               --runMode genomeGenerate \\
               --runThreadN ${task.cpus} \\
+              --genomeSAindexNbases ${params.genomeSAindexNbases} \\
               --sjdbGTFfile $gtf \\
               --genomeDir star/ \\
               --genomeFastaFiles $fasta \\
