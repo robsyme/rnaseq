@@ -328,7 +328,7 @@ def completionEmail(summary_params, email, email_on_fail, plaintext_email, outdi
     email_fields['summary']      = summary << misc_fields
 
     // On success try attach the multiqc report
-    log.info "Attaching MultiQC report"
+    log.info "Attaching MultiQC report: ${multiqc_report} (${multiqc_report.getClass()})"
     def mqc_report = attachMultiqcReport(multiqc_report)
     log.info "MultiQC report: ${mqc_report}"
     // Check if we are only sending emails on failure
