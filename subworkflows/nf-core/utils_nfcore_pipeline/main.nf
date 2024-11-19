@@ -249,11 +249,15 @@ def logColours(monochrome_logs=true) {
 // Attach the multiqc report to email
 //
 def attachMultiqcReport(multiqc_report) {
+    log.info "In attachMultiqcReport"
     def mqc_report = null
     try {
         if (workflow.success) {
+            log.info "In attachMultiqcReport - success"
             mqc_report = multiqc_report.getVal()
+            log.info "In attachMultiqcReport - success - mqc_report: ${mqc_report}"
             if (mqc_report.getClass() == ArrayList && mqc_report.size() >= 1) {
+                log.info "In attachMultiqcReport - success - mqc_report - ArrayList"
                 if (mqc_report.size() > 1) {
                     log.warn("[${workflow.manifest.name}] Found multiple reports from process 'MULTIQC', will use only one")
                 }
@@ -262,6 +266,7 @@ def attachMultiqcReport(multiqc_report) {
         }
     }
     catch (Exception all) {
+        log.info "In attachMultiqcReport - exception"
         if (multiqc_report) {
             log.warn("[${workflow.manifest.name}] Could not attach MultiQC report to summary email")
         }
@@ -325,7 +330,7 @@ def completionEmail(summary_params, email, email_on_fail, plaintext_email, outdi
     // On success try attach the multiqc report
     log.info "Attaching MultiQC report"
     def mqc_report = attachMultiqcReport(multiqc_report)
-
+    log.info "MultiQC report: ${mqc_report}"
     // Check if we are only sending emails on failure
     def email_address = email
     if (!email && email_on_fail && !workflow.success) {
