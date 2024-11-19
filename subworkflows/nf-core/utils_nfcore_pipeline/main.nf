@@ -254,6 +254,7 @@ def attachMultiqcReport(multiqc_report) {
     try {
         if (workflow.success) {
             log.info "In attachMultiqcReport - success"
+            log.info "Found multiqc_report: ${multiqc_report} (${multiqc_report.getClass()})"
             mqc_report = multiqc_report.getVal()
             log.info "In attachMultiqcReport - success - mqc_report: ${mqc_report}"
             if (mqc_report.getClass() == ArrayList && mqc_report.size() >= 1) {
